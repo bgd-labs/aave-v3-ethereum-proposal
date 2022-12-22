@@ -8,7 +8,7 @@ import {ACL_MANAGER, ACL_ADMIN} from '../lib/aave-address-book/src/ts/AaveV3Ethe
 import {SHORT_EXECUTOR} from '../lib/aave-address-book/src/ts/AaveGovernanceV2';
 
 const provider = new providers.StaticJsonRpcProvider(
-  process.env.TENDERLY_FORK_RPC
+  process.env.RPC_TENDERLY
 );
 
 const payloadAddress = '0x8DFDBeacB95445c8e6eBfEdA9A4d2E40DC9cC3e5';
