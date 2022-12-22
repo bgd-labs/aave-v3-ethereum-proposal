@@ -1,9 +1,11 @@
 {
   "name": "bgd-forge-template",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "lint": "prettier ./",
-    "lint:fix": "npm run lint -- --write"
+    "lint:fix": "npm run lint -- --write",
+    "execute:payload": "node js-scripts/execution.js"
   },
   "repository": {
     "type": "git",

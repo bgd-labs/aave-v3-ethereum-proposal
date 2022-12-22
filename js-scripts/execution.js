@@ -2,10 +2,10 @@ import "dotenv/config";
 import { providers } from "ethers";
 
 import AaveV3EthereumInitialPayload from '../out/AaveV3EthereumInitialPayload.sol/AaveV3EthereumInitialPayload.json' assert {type: 'json'};
-import ACLManager from './abis/ACLManager.json';
+import ACLManager from './abis/ACLManager.json' assert {type: 'json'};
 
 const provider = new providers.StaticJsonRpcProvider(
-  ${process.env.TENDERLY_FORK_RPC}
+  process.env.TENDERLY_FORK_RPC
 );
 
 const SHORT_EXECUTOR = '0xEE56e2B3D491590B5b31738cC34d5232F378a8D5';
@@ -25,7 +25,7 @@ const executePayload = async () => {
 
   const addPoolAdminTx = await aclManagerContract.addPoolAdmin(payloadAddress);
   await addPoolAdminTx.wait();
-  
+
   // call payload
   const payloadContract = new ethers.Contract(
     payloadAddress,
