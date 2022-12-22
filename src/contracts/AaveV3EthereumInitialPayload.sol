@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-// import {AaveV3Ethereum} from 'aave-address-book/AaveV3Ethereum.sol';
+import {AaveV3EthereumDraft} from 'aave-address-book/AaveV3EthereumDraft.sol';
 import {AaveV3ListingEthereum, IGenericV3ListingEngine} from 'aave-helpers/v3-listing-engine/AaveV3ListingEthereum.sol';
 
 /**
@@ -15,7 +15,7 @@ contract AaveV3EthereumInitialPayload is AaveV3ListingEthereum {
   constructor(IGenericV3ListingEngine listingEngine) AaveV3ListingEthereum(listingEngine) {}
 
   function _preExecute() internal override {
-    // AaveV3Ethereum.POOL_CONFIGURATOR.setPoolPause(false);
+    AaveV3EthereumDraft.POOL_CONFIGURATOR.setPoolPause(false);
   }
 
   function getAllConfigs() public pure override returns (IGenericV3ListingEngine.Listing[] memory) {
