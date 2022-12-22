@@ -10,6 +10,7 @@ fs_permissions = [{access = "write", path = "./reports"}]
 
 [rpc_endpoints]
 mainnet = "${RPC_MAINNET}"
+tenderly = "${RPC_TENDERLY}"
 optimism = "${RPC_OPTIMISM}"
 avalanche = "${RPC_AVALANCHE}"
 polygon = "${RPC_POLYGON}"

@@ -29,6 +29,7 @@ contract AaveV3EthereumInitialPayload is AaveV3ListingEthereum {
       enabledToBorrow: true,
       stableRateModeEnabled: false,
       borrowableInIsolation: false,
+      withSiloedBorrowing: false,
       flashloanable: true,
       ltv: 70_00,
       liqThreshold: 75_00,
@@ -37,7 +38,8 @@ contract AaveV3EthereumInitialPayload is AaveV3ListingEthereum {
       supplyCap: 43_000,
       borrowCap: 22_000,
       debtCeiling: 0,
-      liqProtocolFee: 10_00
+      liqProtocolFee: 10_00,
+      eModeCategory: 0
     });
     listings[1] = IGenericV3ListingEngine.Listing({
       asset: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2,
@@ -47,6 +49,7 @@ contract AaveV3EthereumInitialPayload is AaveV3ListingEthereum {
       enabledToBorrow: true,
       stableRateModeEnabled: false,
       borrowableInIsolation: false,
+      withSiloedBorrowing: false,
       flashloanable: true,
       ltv: 80_00,
       liqThreshold: 82_50,
@@ -55,7 +58,8 @@ contract AaveV3EthereumInitialPayload is AaveV3ListingEthereum {
       supplyCap: 1_800_000,
       borrowCap: 990_000,
       debtCeiling: 0,
-      liqProtocolFee: 10_00
+      liqProtocolFee: 10_00,
+      eModeCategory: 0
     });
     listings[2] = IGenericV3ListingEngine.Listing({
       asset: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,
@@ -65,6 +69,7 @@ contract AaveV3EthereumInitialPayload is AaveV3ListingEthereum {
       enabledToBorrow: true,
       stableRateModeEnabled: false,
       borrowableInIsolation: false,
+      withSiloedBorrowing: false,
       flashloanable: true,
       ltv: 74_00,
       liqThreshold: 76_00,
@@ -73,7 +78,8 @@ contract AaveV3EthereumInitialPayload is AaveV3ListingEthereum {
       supplyCap: 678_000,
       borrowCap: 373_000,
       debtCeiling: 0,
-      liqProtocolFee: 10_00
+      liqProtocolFee: 10_00,
+      eModeCategory: 0
     });
     listings[3] = IGenericV3ListingEngine.Listing({
       asset: 0x6B175474E89094C44Da98b954EedeAC495271d0F,
@@ -83,6 +89,7 @@ contract AaveV3EthereumInitialPayload is AaveV3ListingEthereum {
       enabledToBorrow: true,
       stableRateModeEnabled: false,
       borrowableInIsolation: false,
+      withSiloedBorrowing: false,
       flashloanable: true,
       ltv: 64_00,
       liqThreshold: 77_00,
@@ -91,7 +98,8 @@ contract AaveV3EthereumInitialPayload is AaveV3ListingEthereum {
       supplyCap: 103_000,
       borrowCap: 57_000,
       debtCeiling: 0,
-      liqProtocolFee: 10_00
+      liqProtocolFee: 10_00,
+      eModeCategory: 0
     });
 
     return listings;
