@@ -14,14 +14,11 @@ const provider = new providers.StaticJsonRpcProvider(
 const payloadAddress = '0x8DFDBeacB95445c8e6eBfEdA9A4d2E40DC9cC3e5';
 
 const executePayload = async () => {
-  // add pool admin permissions to payload
   const aclManagerContract = new ethers.Contract(
     ACL_MANAGER,
     ACLManager,
     provider.getSigner(ACL_ADMIN)
   );
-  // const addListingAdminTx = await aclManagerContract.addAssetListingAdmin(payloadAddress);
-  // await addListingAdminTx.wait();
 
   const addPoolAdminTx = await aclManagerContract.addPoolAdmin(payloadAddress);
   await addPoolAdminTx.wait();
@@ -29,8 +26,6 @@ const executePayload = async () => {
   const addEmergencyAdminTx = await aclManagerContract.addEmergencyAdmin(payloadAddress);
   await addEmergencyAdminTx.wait();
 
-
-  // call payload
   const payloadContract = new ethers.Contract(
     payloadAddress,
     AaveV3EthereumInitialPayload.abi,
