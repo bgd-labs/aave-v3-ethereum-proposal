@@ -77,9 +77,9 @@ library AaveV3EthereumRateStrategies {
         optimalUsageRatio: _bpsToRay(45_00),
         baseVariableBorrowRate: 0,
         variableRateSlope1: _bpsToRay(7_00),
-        variableRateSlope2: _bpsToRay(30_00),
+        variableRateSlope2: _bpsToRay(300_00),
         stableRateSlope1: _bpsToRay(7_00),
-        stableRateSlope2: _bpsToRay(30_00),
+        stableRateSlope2: _bpsToRay(300_00),
         baseStableRateOffset: _bpsToRay(2_00),
         stableRateExcessOffset: _bpsToRay(5_00),
         optimalStableToTotalDebtRatio: _bpsToRay(20_00)
