@@ -12,6 +12,7 @@ test   :; forge test -vvv
 # Actions
 deploy-v3-engine-tenderly :; forge script scripts/AaveV3EthereumActions.s.sol:DeployEngine --rpc-url tenderly --broadcast --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} -vvvv
 deploy-v3-ethereum-payload-tenderly :; forge script scripts/AaveV3EthereumActions.s.sol:DeployPayload --rpc-url tenderly --broadcast --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} -vvvv
+deploy-v3-ethereum-strategies-mainnet :; forge script scripts/AaveV3EthereumActions.s.sol:DeployRateStrategies --rpc-url mainnet -vvv
 
 # Utilities
 download :; cast etherscan-source --chain ${chain} -d src/etherscan/${chain}_${address} ${address}
