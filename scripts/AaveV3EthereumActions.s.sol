@@ -3,22 +3,22 @@ pragma solidity ^0.8.0;
 
 import {Script} from 'forge-std/Script.sol';
 import {GenericV3ListingEngine, IGenericV3ListingEngine} from 'aave-helpers/v3-listing-engine/GenericV3ListingEngine.sol';
-import {AaveV3EthereumDraft} from 'aave-address-book/AaveV3EthereumDraft.sol';
+import {AaveV3Ethereum} from 'aave-address-book/AaveV3Ethereum.sol';
 import {DefaultReserveInterestRateStrategy} from 'aave-v3-core/contracts/protocol/pool/DefaultReserveInterestRateStrategy.sol';
 import {AaveV3EthereumInitialPayload} from '../src/contracts/AaveV3EthereumInitialPayload.sol';
-import {AaveV3EthereumRateStrategies} from '../src/contracts/AaveV3EthereumConfigsLib.sol';
+import {AaveV3EthereumRateStrategiesDefinition} from '../src/contracts/AaveV3EthereumRateStrategiesDefinition.sol';
 
 contract DeployEngine is Script {
   function run() external {
     vm.startBroadcast();
     new GenericV3ListingEngine(
-      AaveV3EthereumDraft.POOL_CONFIGURATOR,
-      AaveV3EthereumDraft.ORACLE,
-      AaveV3EthereumDraft.DEFAULT_A_TOKEN_IMPL_REV_1,
-      AaveV3EthereumDraft.DEFAULT_VARIABLE_DEBT_TOKEN_IMPL_REV_1,
-      AaveV3EthereumDraft.DEFAULT_STABLE_DEBT_TOKEN_IMPL_REV_1,
-      AaveV3EthereumDraft.DEFAULT_INCENTIVES_CONTROLLER,
-      AaveV3EthereumDraft.COLLECTOR
+      AaveV3Ethereum.POOL_CONFIGURATOR,
+      AaveV3Ethereum.ORACLE,
+      AaveV3Ethereum.DEFAULT_A_TOKEN_IMPL_REV_1,
+      AaveV3Ethereum.DEFAULT_VARIABLE_DEBT_TOKEN_IMPL_REV_1,
+      AaveV3Ethereum.DEFAULT_STABLE_DEBT_TOKEN_IMPL_REV_1,
+      AaveV3Ethereum.DEFAULT_INCENTIVES_CONTROLLER,
+      AaveV3Ethereum.COLLECTOR
     );
     vm.stopBroadcast();
   }
@@ -27,25 +27,24 @@ contract DeployEngine is Script {
 contract DeployPayload is Script {
   function run() external {
     vm.startBroadcast();
-    IGenericV3ListingEngine v3ListingEngine = IGenericV3ListingEngine(
-      0xc148f4a658105dAD8D1F139b00f99aB914CeDd54 // TODO replace with final one of v3 Ethereum
-    );
 
-    new AaveV3EthereumInitialPayload(v3ListingEngine);
+    new AaveV3EthereumInitialPayload();
     vm.stopBroadcast();
   }
 }
 
-contract DeployRateStrategies is Script {
+contract DeployEthWSTEthStrategies is Script {
   function run() external {
     vm.startBroadcast();
 
-    AaveV3EthereumRateStrategies.RateStrategyConfig[] memory configs = AaveV3EthereumRateStrategies
-      ._getAllConfigs();
+    AaveV3EthereumRateStrategiesDefinition.RateStrategyConfig[]
+      memory configs = new AaveV3EthereumRateStrategiesDefinition.RateStrategyConfig[](2);
+    configs[0] = AaveV3EthereumRateStrategiesDefinition._rateEth();
+    configs[1] = AaveV3EthereumRateStrategiesDefinition._rateWSTEth();
 
     for (uint256 i = 0; i < configs.length; i++) {
       new DefaultReserveInterestRateStrategy(
-        AaveV3EthereumDraft.POOL_ADDRESSES_PROVIDER, // TODO replace with final v3 Ethereum
+        AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
         configs[i].optimalUsageRatio,
         configs[i].baseVariableBorrowRate,
         configs[i].variableRateSlope1,

@@ -4,7 +4,7 @@ import { providers, ethers } from "ethers";
 import AaveV3EthereumInitialPayload from '../out/AaveV3EthereumInitialPayload.sol/AaveV3EthereumInitialPayload.json';
 import ACLManager from './abis/ACLManager.json';
 
-import {ACL_MANAGER, ACL_ADMIN} from '../lib/aave-address-book/src/ts/AaveV3EthereumDraft';
+import {ACL_MANAGER, ACL_ADMIN} from '../lib/aave-address-book/src/ts/AaveV3Ethereum';
 import {SHORT_EXECUTOR} from '../lib/aave-address-book/src/ts/AaveGovernanceV2';
 
 const provider = new providers.StaticJsonRpcProvider(
