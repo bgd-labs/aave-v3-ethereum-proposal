@@ -3,49 +3,24 @@ pragma solidity ^0.8.0;
 
 import {AaveV3Ethereum} from 'aave-address-book/AaveV3Ethereum.sol';
 import {AaveGovernanceV2} from 'aave-address-book/AaveGovernanceV2.sol';
-import {AaveV3ListingEthereum, IGenericV3ListingEngine} from 'aave-helpers/v3-listing-engine/AaveV3ListingEthereum.sol';
-
-library AaveV3EthereumAssets {
-  address internal constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
-  address internal constant DAI = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
-  address internal constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
-  address internal constant WSTETH = 0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0;
-  address internal constant WBTC = 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599;
-  address internal constant LINK = 0x514910771AF9Ca656af840dff83E8264EcF986CA;
-  address internal constant AAVE = 0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9;
-}
-
-library AaveV3EthereumPriceFeeds {
-  address internal constant USDC_USD = 0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6;
-  address internal constant DAI_USD = 0xAed0c38402a5d19df6E4c03F4E2DceD6e29c1ee9;
-  address internal constant ETH_USD = 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419;
-  address internal constant WSTETH_USD = 0xA9F30e6ED4098e9439B2ac8aEA2d3fc26BcEbb45;
-  address internal constant WBTC_USD = 0x230E0321Cf38F09e247e50Afc7801EA2351fe56F;
-  address internal constant LINK_USD = 0x2c1d072e956AFFC0D435Cb7AC38EF18d24d9127c;
-  address internal constant AAVE_USD = 0x547a514d5e3769680Ce22B2361c10Ea13619e8a9;
-}
-
-library AaveV3EthereumRateStrategies {
-  address internal constant USDC = 0xD6293edBB2E5E0687a79F01BEcd51A778d59D1c5;
-  address internal constant DAI = 0x694d4cFdaeE639239df949b6E24Ff8576A00d1f2;
-  address internal constant WETH = 0x165e90Bd0a41d08fA1891CcDCEe315D7b83B3419;
-  address internal constant WSTETH = 0x7b8Fa4540246554e77FCFf140f9114de00F8bB8D;
-  address internal constant WBTC = 0x24701A6368Ff6D2874d6b8cDadd461552B8A5283;
-  address internal constant LINK = 0x24701A6368Ff6D2874d6b8cDadd461552B8A5283;
-  address internal constant AAVE = 0x24701A6368Ff6D2874d6b8cDadd461552B8A5283;
-}
+import {AaveV3EthereumEModes} from './AaveV3EthereumConfigs.sol';
+import {AaveV3EthereumUSDCSteward} from './stewards/AaveV3EthereumUSDCSteward.sol';
+import {AaveV3EthereumDAISteward} from './stewards/AaveV3EthereumDAISteward.sol';
+import {AaveV3EthereumWETHSteward} from './stewards/AaveV3EthereumWETHSteward.sol';
+import {AaveV3EthereumWSTETHSteward} from './stewards/AaveV3EthereumWSTETHSteward.sol';
+import {AaveV3EthereumWBTCSteward} from './stewards/AaveV3EthereumWBTCSteward.sol';
+import {AaveV3EthereumLINKSteward} from './stewards/AaveV3EthereumLINKSteward.sol';
+import {AaveV3EthereumAAVESteward} from './stewards/AaveV3EthereumAAVESteward.sol';
 
 /**
  * @notice AaveV3EthereumInitialPayload
  * @dev Initial payload of Aave v3 Ethereum:
- * - Unpauses the Aave v3 Ethereum pool
  * - Creates eMode for ETH-correlated
- * - Lists the initial assets decided by the Aave community (USDC, DAI, WETH, wstETH, WBTC, AAVE and LINK)
  * - Adds the Aave Guardian as EMERGENCY_ADMIN and revokes the Governance Short Executor (Level 1)
+ * - Deploy and give POOL_ADMIN permissions to listing Stewards contracts for USDC, DAI, WETH, wstETH, WBTC, LINK and AAVE
  * @author BGD Labs
  */
-contract AaveV3EthereumInitialPayload is AaveV3ListingEthereum {
-  uint8 public constant EMODE_ID_ETH_CORRELATED = uint8(1);
+contract AaveV3EthereumInitialPayload {
   string public constant EMODE_LABEL_ETH_CORRELATED = 'ETH correlated';
   uint16 public constant EMODE_LTV_ETH_CORRELATED = 90_00;
   uint16 public constant EMODE_LT_ETH_CORRELATED = 93_00;
@@ -53,12 +28,30 @@ contract AaveV3EthereumInitialPayload is AaveV3ListingEthereum {
 
   address public constant GUARDIAN_ETHEREUM = 0xCA76Ebd8617a03126B6FB84F9b1c1A0fB71C2633;
 
-  constructor(IGenericV3ListingEngine listingEngine) AaveV3ListingEthereum(listingEngine) {}
+  address public immutable USDC_STEWARD;
+  address public immutable DAI_STEWARD;
+  address public immutable WETH_STEWARD;
+  address public immutable WSTETH_STEWARD;
+  address public immutable WBTC_STEWARD;
+  address public immutable LINK_STEWARD;
+  address public immutable AAVE_STEWARD;
 
-  function _preExecute() internal override {
-    AaveV3Ethereum.POOL_CONFIGURATOR.setPoolPause(false);
+  constructor() {
+    USDC_STEWARD = address(new AaveV3EthereumUSDCSteward());
+    DAI_STEWARD = address(new AaveV3EthereumDAISteward());
+    WETH_STEWARD = address(new AaveV3EthereumWETHSteward());
+    WSTETH_STEWARD = address(new AaveV3EthereumWSTETHSteward());
+    WBTC_STEWARD = address(new AaveV3EthereumWBTCSteward());
+    LINK_STEWARD = address(new AaveV3EthereumLINKSteward());
+    AAVE_STEWARD = address(new AaveV3EthereumAAVESteward());
+  }
+
+  function execute() external {
+    // -------------------------------------------------
+    // 1. Creation of the ETH-correlated eMode category
+    // -------------------------------------------------
     AaveV3Ethereum.POOL_CONFIGURATOR.setEModeCategory(
-      EMODE_ID_ETH_CORRELATED,
+      AaveV3EthereumEModes.EMODE_ID_ETH_CORRELATED,
       EMODE_LTV_ETH_CORRELATED,
       EMODE_LT_ETH_CORRELATED,
       EMODE_LBONUS_ETH_CORRELATED,
@@ -66,158 +59,37 @@ contract AaveV3EthereumInitialPayload is AaveV3ListingEthereum {
       EMODE_LABEL_ETH_CORRELATED
     );
 
+    // -------------------------------------------
+    // 2. Swap of emergency admin to Aave Guardian
+    // -------------------------------------------
+
     // Same as using 'address(this)' in the context of SHORT_EXECUTOR delegatecall, but seems more correct
     // to use aave-address-book to avoid assumptions
     AaveV3Ethereum.ACL_MANAGER.removeEmergencyAdmin(AaveGovernanceV2.SHORT_EXECUTOR);
     AaveV3Ethereum.ACL_MANAGER.addEmergencyAdmin(GUARDIAN_ETHEREUM);
+
+    // ------------------------------------------------
+    // 3. Give POOL_ADMIN to each asset-listing steward
+    // (they will renounce after executing their logic)
+    // ------------------------------------------------
+
+    address[] memory stewards = getAllListingStewards();
+    for (uint256 i = 0; i < stewards.length; i++) {
+      AaveV3Ethereum.ACL_MANAGER.addPoolAdmin(stewards[i]);
+    }
   }
 
-  function getAllConfigs() public pure override returns (IGenericV3ListingEngine.Listing[] memory) {
-    IGenericV3ListingEngine.Listing[] memory listings = new IGenericV3ListingEngine.Listing[](7);
+  function getAllListingStewards() public view returns (address[] memory) {
+    address[] memory stewards = new address[](7);
 
-    listings[0] = IGenericV3ListingEngine.Listing({
-      asset: AaveV3EthereumAssets.WBTC,
-      assetSymbol: 'WBTC',
-      priceFeed: AaveV3EthereumPriceFeeds.WBTC_USD,
-      rateStrategy: AaveV3EthereumRateStrategies.WBTC,
-      enabledToBorrow: true,
-      stableRateModeEnabled: false,
-      borrowableInIsolation: false,
-      withSiloedBorrowing: false,
-      flashloanable: true,
-      ltv: 70_00,
-      liqThreshold: 75_00,
-      liqBonus: 6_25,
-      reserveFactor: 20_00,
-      supplyCap: 43_000,
-      borrowCap: 28_000,
-      debtCeiling: 0,
-      liqProtocolFee: 10_00,
-      eModeCategory: 0
-    });
-    listings[1] = IGenericV3ListingEngine.Listing({
-      asset: AaveV3EthereumAssets.WETH,
-      assetSymbol: 'WETH',
-      priceFeed: AaveV3EthereumPriceFeeds.ETH_USD,
-      rateStrategy: AaveV3EthereumRateStrategies.WETH,
-      enabledToBorrow: true,
-      stableRateModeEnabled: false,
-      borrowableInIsolation: false,
-      withSiloedBorrowing: false,
-      flashloanable: true,
-      ltv: 80_00,
-      liqThreshold: 82_50,
-      liqBonus: 5_00,
-      reserveFactor: 15_00,
-      supplyCap: 1_800_000,
-      borrowCap: 1_400_000,
-      debtCeiling: 0,
-      liqProtocolFee: 10_00,
-      eModeCategory: EMODE_ID_ETH_CORRELATED
-    });
-    listings[2] = IGenericV3ListingEngine.Listing({
-      asset: AaveV3EthereumAssets.WSTETH,
-      assetSymbol: 'wstETH',
-      priceFeed: AaveV3EthereumPriceFeeds.WSTETH_USD,
-      rateStrategy: AaveV3EthereumRateStrategies.WSTETH,
-      enabledToBorrow: true,
-      stableRateModeEnabled: false,
-      borrowableInIsolation: false,
-      withSiloedBorrowing: false,
-      flashloanable: true,
-      ltv: 68_50,
-      liqThreshold: 79_50,
-      liqBonus: 7_00,
-      reserveFactor: 15_00,
-      supplyCap: 200_000,
-      borrowCap: 3_000,
-      debtCeiling: 0,
-      liqProtocolFee: 10_00,
-      eModeCategory: EMODE_ID_ETH_CORRELATED
-    });
-    listings[3] = IGenericV3ListingEngine.Listing({
-      asset: AaveV3EthereumAssets.USDC,
-      assetSymbol: 'USDC',
-      priceFeed: AaveV3EthereumPriceFeeds.USDC_USD,
-      rateStrategy: AaveV3EthereumRateStrategies.USDC,
-      enabledToBorrow: true,
-      stableRateModeEnabled: false,
-      borrowableInIsolation: false,
-      withSiloedBorrowing: false,
-      flashloanable: true,
-      ltv: 74_00,
-      liqThreshold: 76_00,
-      liqBonus: 4_50,
-      reserveFactor: 10_00,
-      supplyCap: 1_760_000_000,
-      borrowCap: 1_580_000_000,
-      debtCeiling: 0,
-      liqProtocolFee: 20_00,
-      eModeCategory: 0
-    });
-    listings[4] = IGenericV3ListingEngine.Listing({
-      asset: AaveV3EthereumAssets.DAI,
-      assetSymbol: 'DAI',
-      priceFeed: AaveV3EthereumPriceFeeds.DAI_USD,
-      rateStrategy: AaveV3EthereumRateStrategies.DAI,
-      enabledToBorrow: true,
-      stableRateModeEnabled: false,
-      borrowableInIsolation: false,
-      withSiloedBorrowing: false,
-      flashloanable: true,
-      ltv: 64_00,
-      liqThreshold: 77_00,
-      liqBonus: 4_00,
-      reserveFactor: 10_00,
-      supplyCap: 338_000_000,
-      borrowCap: 271_000_000,
-      debtCeiling: 0,
-      liqProtocolFee: 20_00,
-      eModeCategory: 0
-    });
+    stewards[0] = USDC_STEWARD;
+    stewards[1] = DAI_STEWARD;
+    stewards[2] = WETH_STEWARD;
+    stewards[3] = WSTETH_STEWARD;
+    stewards[4] = WBTC_STEWARD;
+    stewards[5] = LINK_STEWARD;
+    stewards[6] = AAVE_STEWARD;
 
-    listings[5] = IGenericV3ListingEngine.Listing({
-      asset: AaveV3EthereumAssets.LINK,
-      assetSymbol: 'LINK',
-      priceFeed: AaveV3EthereumPriceFeeds.LINK_USD,
-      rateStrategy: AaveV3EthereumRateStrategies.LINK,
-      enabledToBorrow: true,
-      stableRateModeEnabled: false,
-      borrowableInIsolation: false,
-      withSiloedBorrowing: false,
-      flashloanable: true,
-      ltv: 50_00,
-      liqThreshold: 65_00,
-      liqBonus: 7_50,
-      reserveFactor: 20_00,
-      supplyCap: 24_000_000,
-      borrowCap: 13_000_000,
-      debtCeiling: 0,
-      liqProtocolFee: 10_00,
-      eModeCategory: 0
-    });
-
-    listings[6] = IGenericV3ListingEngine.Listing({
-      asset: AaveV3EthereumAssets.AAVE,
-      assetSymbol: 'AAVE',
-      priceFeed: AaveV3EthereumPriceFeeds.AAVE_USD,
-      rateStrategy: AaveV3EthereumRateStrategies.AAVE,
-      enabledToBorrow: false,
-      stableRateModeEnabled: false,
-      borrowableInIsolation: false,
-      withSiloedBorrowing: false,
-      flashloanable: false,
-      ltv: 60_00,
-      liqThreshold: 70_00,
-      liqBonus: 7_50,
-      reserveFactor: 0,
-      supplyCap: 1_850_000,
-      borrowCap: 0,
-      debtCeiling: 0,
-      liqProtocolFee: 10_00,
-      eModeCategory: 0
-    });
-
-    return listings;
+    return stewards;
   }
 }

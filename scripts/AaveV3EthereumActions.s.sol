@@ -6,7 +6,7 @@ import {GenericV3ListingEngine, IGenericV3ListingEngine} from 'aave-helpers/v3-l
 import {AaveV3Ethereum} from 'aave-address-book/AaveV3Ethereum.sol';
 import {DefaultReserveInterestRateStrategy} from 'aave-v3-core/contracts/protocol/pool/DefaultReserveInterestRateStrategy.sol';
 import {AaveV3EthereumInitialPayload} from '../src/contracts/AaveV3EthereumInitialPayload.sol';
-import {AaveV3EthereumRateStrategiesDefinition} from '../src/contracts/AaveV3EthereumConfigsLib.sol';
+import {AaveV3EthereumRateStrategiesDefinition} from '../src/contracts/AaveV3EthereumRateStrategiesDefinition.sol';
 
 contract DeployEngine is Script {
   function run() external {
@@ -27,11 +27,8 @@ contract DeployEngine is Script {
 contract DeployPayload is Script {
   function run() external {
     vm.startBroadcast();
-    IGenericV3ListingEngine v3ListingEngine = IGenericV3ListingEngine(
-      0xC51e6E38d406F98049622Ca54a6096a23826B426
-    );
 
-    new AaveV3EthereumInitialPayload(v3ListingEngine);
+    new AaveV3EthereumInitialPayload();
     vm.stopBroadcast();
   }
 }
