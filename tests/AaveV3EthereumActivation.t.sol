@@ -6,22 +6,22 @@ import {AaveV3Ethereum} from 'aave-address-book/AaveAddressBook.sol';
 import {ProtocolV3_0_1TestBase, ReserveConfig} from 'aave-helpers/ProtocolV3TestBase.sol';
 import {AaveGovernanceV2} from 'aave-address-book/AaveGovernanceV2.sol';
 import {AaveV3EthereumInitialPayload} from '../src/contracts/AaveV3EthereumInitialPayload.sol';
-import {BaseTest} from './utils/BaseTest.sol';
+import {TestWithExecutor} from 'aave-helpers/GovHelpers.sol';
 
 interface ISimpleSteward {
   function execute() external;
 }
 
-contract AaveV3EthereumActivation is ProtocolV3_0_1TestBase, BaseTest {
+contract AaveV3EthereumActivation is ProtocolV3_0_1TestBase, TestWithExecutor {
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('mainnet'), 16434920);
-    _setUp(AaveGovernanceV2.SHORT_EXECUTOR);
+    _selectPayloadExecutor(AaveGovernanceV2.SHORT_EXECUTOR);
   }
 
   function testPoolActivation() public {
     AaveV3EthereumInitialPayload activationPayload = new AaveV3EthereumInitialPayload();
 
-    _execute(address(activationPayload));
+    _executePayload(address(activationPayload));
 
     address[] memory stewards = activationPayload.getAllListingStewards();
     for (uint256 i = 0; i < stewards.length; i++) {
