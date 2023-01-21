@@ -60,3 +60,27 @@ contract DeployEthWSTEthStrategies is Script {
     vm.stopBroadcast();
   }
 }
+
+contract DeployEthStrategyV2 is Script {
+  function run() external {
+    vm.startBroadcast();
+
+    AaveV3EthereumRateStrategiesDefinition.RateStrategyConfig
+      memory config = AaveV3EthereumRateStrategiesDefinition._rateEthV2();
+
+    new DefaultReserveInterestRateStrategy(
+      AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,
+      config.optimalUsageRatio,
+      config.baseVariableBorrowRate,
+      config.variableRateSlope1,
+      config.variableRateSlope2,
+      config.stableRateSlope1,
+      config.stableRateSlope2,
+      config.baseStableRateOffset,
+      config.stableRateExcessOffset,
+      config.optimalStableToTotalDebtRatio
+    );
+
+    vm.stopBroadcast();
+  }
+}

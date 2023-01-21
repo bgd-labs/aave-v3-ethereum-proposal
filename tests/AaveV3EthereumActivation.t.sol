@@ -13,7 +13,7 @@ interface ISimpleSteward {
 
 contract AaveV3EthereumActivation is ProtocolV3_0_1TestBase, TestWithExecutor {
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 16448520);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 16457230);
     _selectPayloadExecutor(AaveGovernanceV2.SHORT_EXECUTOR);
   }
 

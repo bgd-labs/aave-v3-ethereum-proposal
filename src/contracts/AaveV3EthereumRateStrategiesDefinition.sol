@@ -82,6 +82,22 @@ library AaveV3EthereumRateStrategiesDefinition {
       });
   }
 
+  // For WETH (modified to be same as currently on Aave v2 Ethereum)
+  function _rateEthV2() internal pure returns (RateStrategyConfig memory) {
+    return
+      RateStrategyConfig({
+        optimalUsageRatio: _bpsToRay(80_00),
+        baseVariableBorrowRate: 0,
+        variableRateSlope1: _bpsToRay(5_75),
+        variableRateSlope2: _bpsToRay(80_00),
+        stableRateSlope1: _bpsToRay(4_00),
+        stableRateSlope2: _bpsToRay(80_00),
+        baseStableRateOffset: _bpsToRay(3_00),
+        stableRateExcessOffset: _bpsToRay(5_00),
+        optimalStableToTotalDebtRatio: _bpsToRay(20_00)
+      });
+  }
+
   // For WSTETH
   function _rateWSTEth() internal pure returns (RateStrategyConfig memory) {
     return
