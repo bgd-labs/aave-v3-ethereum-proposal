@@ -13,12 +13,14 @@ interface ISimpleSteward {
 
 contract AaveV3EthereumActivation is ProtocolV3_0_1TestBase, TestWithExecutor {
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('mainnet'), 16448520);
+    vm.createSelectFork(vm.rpcUrl('mainnet'), 16461480);
     _selectPayloadExecutor(AaveGovernanceV2.SHORT_EXECUTOR);
   }
 
   function testPoolActivation() public {
-    AaveV3EthereumInitialPayload activationPayload = new AaveV3EthereumInitialPayload();
+    AaveV3EthereumInitialPayload activationPayload = AaveV3EthereumInitialPayload(
+      0xC5A0BA13A3749c5d4a21934df8Fd64821AC3fCE7
+    );
 
     createConfigurationSnapshot('pre-proposal-aave-v3-ethereum', AaveV3Ethereum.POOL);
 
