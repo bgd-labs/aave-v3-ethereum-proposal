@@ -61,12 +61,12 @@ contract DeployEthWSTEthStrategies is Script {
   }
 }
 
-contract DeployEthStrategyV2 is Script {
+contract DeployEthStrategyMod is Script {
   function run() external {
     vm.startBroadcast();
 
     AaveV3EthereumRateStrategiesDefinition.RateStrategyConfig
-      memory config = AaveV3EthereumRateStrategiesDefinition._rateEthV2();
+      memory config = AaveV3EthereumRateStrategiesDefinition._rateEth();
 
     new DefaultReserveInterestRateStrategy(
       AaveV3Ethereum.POOL_ADDRESSES_PROVIDER,

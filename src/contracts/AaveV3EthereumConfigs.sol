@@ -24,7 +24,7 @@ library AaveV3EthereumPriceFeeds {
 library AaveV3EthereumRateStrategies {
   address internal constant USDC = 0xD6293edBB2E5E0687a79F01BEcd51A778d59D1c5;
   address internal constant DAI = 0x694d4cFdaeE639239df949b6E24Ff8576A00d1f2;
-  address internal constant WETH = 0xEDaD55FB5F4020bF51016614B3301B1FEff8BE46;
+  address internal constant WETH = 0x53F57eAAD604307889D87b747Fc67ea9DE430B01;
   address internal constant WSTETH = 0x7b8Fa4540246554e77FCFf140f9114de00F8bB8D;
   address internal constant WBTC = 0x24701A6368Ff6D2874d6b8cDadd461552B8A5283;
   address internal constant LINK = 0x24701A6368Ff6D2874d6b8cDadd461552B8A5283;
