@@ -7,6 +7,7 @@ import {AaveV3Ethereum} from 'aave-address-book/AaveV3Ethereum.sol';
 import {DefaultReserveInterestRateStrategy} from 'aave-v3-core/contracts/protocol/pool/DefaultReserveInterestRateStrategy.sol';
 import {AaveV3EthereumInitialPayload} from '../src/contracts/AaveV3EthereumInitialPayload.sol';
 import {AaveV3EthereumRateStrategiesDefinition} from '../src/contracts/AaveV3EthereumRateStrategiesDefinition.sol';
+import {BaseV3EthereumWithPoolAdmin} from '../src/contracts/stewards/BaseV3EthereumWithPoolAdmin.sol';
 
 contract DeployEngine is Script {
   function run() external {
@@ -80,6 +81,48 @@ contract DeployEthStrategyMod is Script {
       config.stableRateExcessOffset,
       config.optimalStableToTotalDebtRatio
     );
+
+    vm.stopBroadcast();
+  }
+}
+
+contract ExecuteStewards is Script {
+  function run() external {
+    AaveV3EthereumInitialPayload payloadAddress = AaveV3EthereumInitialPayload(
+      0xC5A0BA13A3749c5d4a21934df8Fd64821AC3fCE7
+    );
+
+    BaseV3EthereumWithPoolAdmin usdcSteward = BaseV3EthereumWithPoolAdmin(
+      payloadAddress.USDC_STEWARD()
+    );
+    BaseV3EthereumWithPoolAdmin daiSteward = BaseV3EthereumWithPoolAdmin(
+      payloadAddress.DAI_STEWARD()
+    );
+    BaseV3EthereumWithPoolAdmin wethSteward = BaseV3EthereumWithPoolAdmin(
+      payloadAddress.WETH_STEWARD()
+    );
+    BaseV3EthereumWithPoolAdmin wstEthSteward = BaseV3EthereumWithPoolAdmin(
+      payloadAddress.WSTETH_STEWARD()
+    );
+    BaseV3EthereumWithPoolAdmin wbtcSteward = BaseV3EthereumWithPoolAdmin(
+      payloadAddress.WBTC_STEWARD()
+    );
+    BaseV3EthereumWithPoolAdmin linkSteward = BaseV3EthereumWithPoolAdmin(
+      payloadAddress.LINK_STEWARD()
+    );
+    BaseV3EthereumWithPoolAdmin aaveSteward = BaseV3EthereumWithPoolAdmin(
+      payloadAddress.AAVE_STEWARD()
+    );
+
+    vm.startBroadcast();
+
+    usdcSteward.execute();
+    daiSteward.execute();
+    wethSteward.execute();
+    wstEthSteward.execute();
+    wbtcSteward.execute();
+    linkSteward.execute();
+    aaveSteward.execute();
 
     vm.stopBroadcast();
   }
